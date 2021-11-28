@@ -39,7 +39,7 @@ export default function NavMenu(props: NavMenuProps)
                 </ListItemButton>
             </Link>
 
-            <Link to="/usefulresources">
+            <Link to="usefulresources">
                 <ListItemButton>
                     <ListItemIcon>
                         <StarBorder />
@@ -52,7 +52,7 @@ export default function NavMenu(props: NavMenuProps)
                 icon={<PhotoCamera />}
                 text="TokenSwipe"
             >
-                <Link to="/tokenswipe/bsc">
+                <Link to="tokenswipe/bsc">
                     <ListItemButton sx={{ paddingLeft: 4 }}>
                         <ListItemIcon>
                             <PhotoCamera />
@@ -61,7 +61,7 @@ export default function NavMenu(props: NavMenuProps)
                     </ListItemButton>
                 </Link>
 
-                <Link to="/tokenswipe/ethereum">
+                <Link to="tokenswipe/ethereum">
                     <ListItemButton sx={{ paddingLeft: 4 }}>
                         <ListItemIcon>
                             <PhotoCamera />

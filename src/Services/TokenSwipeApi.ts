@@ -10,7 +10,7 @@ interface Token
 
 class TokenSwipeApiService
 {
-    private _BASE_API: string = "http://127.0.0.1:8000";
+    private readonly _BASE_API: string = "http://127.0.0.1:8000";
 
     public async getTokens(): Promise<Array<Token>>
     {
