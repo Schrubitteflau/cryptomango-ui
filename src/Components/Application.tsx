@@ -8,25 +8,27 @@ import Home from './Home';
 import UsefulResources from './UsefulResources';
 import Footer from './Layout/Footer';
 import TokenSwipe from './TokenSwipe/TokenSwipe';
+import { authManagerService } from '../Services/AuthManagerService';
 
 export default function Application()
 {
     const navigate = useNavigate();
     const [ isNavMenuOpened, setIsNavMenuOpened ] = useState<boolean>(false);
-    const [ isLoading, setIsLoading ] = useState<boolean>(true);
+    const [ isLoading, setIsLoading ] = useState<boolean>(false);
     const [ isLoggedIn, setIsLoggedIn ] = useState<boolean>(false);
 
     useEffect(() =>
     {
-        if (!isLoggedIn)
+        if (authManagerService.isLoggedIn())
+        {
+            setIsLoading(false);
+            setIsLoggedIn(true);
+        }
+        else
         {
             navigate("/signin", {
                 replace: true
             });
-        }
-        else
-        {
-            setIsLoading(false);
         }
     }, [ isLoggedIn ]);
 
