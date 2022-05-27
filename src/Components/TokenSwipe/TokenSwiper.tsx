@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { tokenSwipeApiService } from "../../Services/TokenSwipeApi";
+import { services, TokenSwipeApiService } from "../../Services";
 import { Token, Network, TokenType } from "../../Types";
 import TokenCard from "./TokenCard";
 
@@ -11,6 +11,8 @@ interface TokenSwiperProps
 
 export default function TokenSwiper(props: TokenSwiperProps)
 {
+    const tokenSwipeApiService: TokenSwipeApiService = services.tokenSwipeApiService;
+
     const [ tokens, setTokens ] = useState<Array<Token>>([]);
     const [ isLoadingTokens, setIsLoadingTokens ] = useState<boolean>(false);
 
@@ -23,7 +25,7 @@ export default function TokenSwiper(props: TokenSwiperProps)
             setTokens(tokens);
             setIsLoadingTokens(false);
         });
-    }, []);
+    }, [ tokenSwipeApiService ]);
 
     useEffect(() =>
     {
@@ -37,7 +39,7 @@ export default function TokenSwiper(props: TokenSwiperProps)
                 setIsLoadingTokens(false);
             });
         }
-    }, [ tokens, isLoadingTokens ]);
+    }, [ tokenSwipeApiService, tokens, isLoadingTokens ]);
 
     function handleDismissToken(): void
     {

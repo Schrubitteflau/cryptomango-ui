@@ -1,10 +1,11 @@
 import { Routes, Route } from "react-router-dom";
+import { Network } from "../../Types";
 import TokenSwipeHome from "./TokenSwipeHome";
 import TokenSwiper from "./TokenSwiper";
 
 interface TokenSwipeProps
 {
-    network: "BSC" | "Ethereum"
+    network: Network
 }
 
 type TokenSwipeRoute = {

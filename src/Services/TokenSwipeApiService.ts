@@ -1,5 +1,4 @@
 import { AbstractApiService } from "./AbstractApiService";
-import { servicesContainer } from "./ServicesContainer";
 
 interface IToken
 {
@@ -11,16 +10,16 @@ interface IToken
 
 export class TokenSwipeApiService extends AbstractApiService
 {
-    private readonly _BASE_API: string = "http://127.0.0.1:8000";
+    private readonly _BASE_API: string = "http://127.0.0.1:8000/tokenSwipe";
 
     public constructor()
     {
-        super(servicesContainer.getAuthManagerService().getAccessToken());
+        super("");
     }
 
     public async getTokens(): Promise<Array<IToken>>
     {
-        const response = await this._axios.get<Array<IToken>>(`${this._BASE_API}/tokens`); 
+        const response = await this._axios.get<Array<IToken>>(`${this._BASE_API}/getNextTokens`); 
         return response.data;
     }
 
@@ -31,6 +30,6 @@ export class TokenSwipeApiService extends AbstractApiService
 
     public async addToList(): Promise<void>
     {
-        await this._axios.get(`${this._BASE_API}/addToList`);
+        await this._axios.get(`${this._BASE_API}/dismiss`);
     }
 }

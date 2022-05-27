@@ -1,3 +1,3 @@
-export { AuthManagerService } from "./AuthManagerService";
+export { AuthApiService } from "./AuthApiService";
 export { TokenSwipeApiService } from "./TokenSwipeApiService";
-export { servicesContainer } from "./ServicesContainer";
+export { services } from "./ServicesContainer";

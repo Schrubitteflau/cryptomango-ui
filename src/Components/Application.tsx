@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { CssBaseline, Typography } from '@mui/material';
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { CssBaseline } from '@mui/material';
+import { Routes, Route } from "react-router-dom";
 import HeadToolbar from "./Layout/HeadToolbar";
 import NavMenu from './Layout/NavMenu';
 import MainContainer from './Layout/MainContainer';
@@ -8,36 +8,41 @@ import Home from './Home';
 import UsefulResources from './UsefulResources';
 import Footer from './Layout/Footer';
 import TokenSwipe from './TokenSwipe/TokenSwipe';
-import { authManagerService } from '../Services/AuthManagerService';
+import { Network } from '../Types';
+import RequireWalletGuard from './Authentication/RequireWalletGuard';
+import { IUserContext, UserContext } from '../Context/UserContext';
+import RequireApiAuthenticationGuard from './Authentication/RequireApiAuthenticationGuard';
+
 
 export default function Application()
 {
-    const navigate = useNavigate();
     const [ isNavMenuOpened, setIsNavMenuOpened ] = useState<boolean>(false);
-    const [ isLoading, setIsLoading ] = useState<boolean>(false);
-    const [ isLoggedIn, setIsLoggedIn ] = useState<boolean>(false);
+    const [ signer, setSigner ] = useState<IUserContext["signer"]>(null);
+    const [ apiAccessToken, setApiAccessToken ] = useState<IUserContext["apiAccessToken"]>(null);
+    const [ userContextValue, setUserContextValue ] = useState<IUserContext>({
+        isWalletConnected: false,
+        signer,
+        setSigner,
+        isAuthenticated: false,
+        apiAccessToken,
+        setApiAccessToken
+    });
 
-    useEffect(() =>
-    {
-        if (authManagerService.isLoggedIn())
-        {
-            setIsLoading(false);
-            setIsLoggedIn(true);
-        }
-        else
-        {
-            navigate("/signin", {
-                replace: true
-            });
-        }
-    }, [ isLoggedIn ]);
+    useEffect(() => {
+        setUserContextValue({
+            ...userContextValue,
+            signer,
+            isWalletConnected: (signer !== null)
+        });
+    }, [ signer ]);
 
-    if (isLoading)
-    {
-        return (
-            <Typography variant="h2">Chargement...</Typography>
-        );
-    }
+    useEffect(() => {
+        setUserContextValue({
+            ...userContextValue,
+            apiAccessToken,
+            isAuthenticated: (apiAccessToken !== null)
+        });
+    }, [ apiAccessToken ]);
 
     /*
         CssBaseline is sort of CSS reset added to the <head /> of your document.
@@ -49,7 +54,9 @@ export default function Application()
         <>
             <CssBaseline />
 
-            <HeadToolbar onDisplayMenuClick={() => setIsNavMenuOpened(true)} />
+            <UserContext.Provider value={userContextValue}>
+                <HeadToolbar onDisplayMenuClick={() => setIsNavMenuOpened(true)} />
+            </UserContext.Provider>
 
             <NavMenu
                 isOpened={isNavMenuOpened}
@@ -59,12 +66,22 @@ export default function Application()
 
             <main>
                 <MainContainer>
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/usefulresources" element={<UsefulResources />} />
-                        <Route path="/tokenswipe/bsc/*" element={<TokenSwipe network="BSC" />} />
-                        <Route path="/tokenswipe/ethereum/*" element={<TokenSwipe network="Ethereum" />} />
-                    </Routes>
+                    <UserContext.Provider value={userContextValue}>
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/usefulresources" element={<UsefulResources />} />
+                            <Route path="/tokenswipe/bsc/*" element={
+                                <RequireApiAuthenticationGuard>
+                                    <TokenSwipe network={Network.BSC} />
+                                </RequireApiAuthenticationGuard>
+                            } />
+                            <Route path="/tokenswipe/ethereum/*" element={
+                                <RequireApiAuthenticationGuard>
+                                    <TokenSwipe network={Network.Ethereum} />
+                                </RequireApiAuthenticationGuard>
+                            } />
+                        </Routes>
+                    </UserContext.Provider>
                 </MainContainer>
             </main>
 

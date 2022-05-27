@@ -1,1 +1,4 @@
-export type Network = "BSC" | "Ethereum";
+export enum Network {
+    Ethereum = 1,
+    BSC = 56
+};

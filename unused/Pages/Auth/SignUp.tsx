@@ -1,41 +1,45 @@
-import { Button, Checkbox, FormControlLabel, Grid, Link } from "@mui/material";
+import { Button, Grid, Link } from "@mui/material";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
 import * as Yup from "yup";
 import { FormikHelpers } from "formik";
 
 import AuthLayout from "./AuthLayout";
-import TextField from "../../FormsUI/TextField";
-import { authManagerService } from "../../../Services/AuthManagerService";
+import TextField from "../../../src/Components/FormsUI/TextField";
+import { servicesContainer, AuthManagerService } from "../../../src/Services";
 
 const INITIAL_FORM_STATE = {
+    email: "test@test.fr",
     username: "test1",
     password: "test12",
+    "password-confirmation": "test12"
 };
 
 type FormType = typeof INITIAL_FORM_STATE;
 
 const FORM_VALIDATION_SCHEMA = Yup.object().shape({
+    email: Yup.string()
+        .required()
+        .email(),
     username: Yup.string()
-        .required("Required"),
+        .required("Required")
+        .min(5),
     password: Yup.string()
         .required("Required")
-        .min(6)
+        .min(6),
+    "password-confirmation": Yup.string()
+        .required()
+        .oneOf([ Yup.ref("password"), null ], "Passwords must match")
 });
 
-function SignInFooter(): JSX.Element
+function SignUpFooter(): JSX.Element
 {
     return (
         <>
-            <Grid item xs>
-                <Link href="#" variant="body2" onClick={() => alert("Not available yet")}>
-                    Forgot password?
-                </Link>
-            </Grid>
             <Grid item>
-                <RouterLink to="/signup">
+                <RouterLink to="/signin">
                     <Link href="#" variant="body2">
-                        Don't have an account? Sign Up
+                        Already have an account? Sign in
                     </Link>
                 </RouterLink>
             </Grid>
@@ -43,10 +47,20 @@ function SignInFooter(): JSX.Element
     );
 }
 
-function SignInForm(): JSX.Element
+function SignUpForm(): JSX.Element
 {
     return (
         <>
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+            />
             <TextField
                 margin="normal"
                 required
@@ -55,7 +69,6 @@ function SignInForm(): JSX.Element
                 label="Username"
                 name="username"
                 autoComplete="username"
-                autoFocus
             />
             <TextField
                 margin="normal"
@@ -67,9 +80,15 @@ function SignInForm(): JSX.Element
                 id="password"
                 autoComplete="current-password"
             />
-            <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password-confirmation"
+                label="Password confirmation"
+                type="password"
+                id="password-confirmation"
+                autoComplete="current-password"
             />
             <Button
                 type="submit"
@@ -77,24 +96,25 @@ function SignInForm(): JSX.Element
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
             >
-                Sign In
+                Sign Up
             </Button>
         </>
     );
 }
 
-export default function SignIn(): JSX.Element
+export default function SignUp(): JSX.Element
 {
+    const authManagerService: AuthManagerService = servicesContainer.getAuthManagerService();
+
     const navigate = useNavigate();
 
     async function handleSubmit(values: FormType, actions: FormikHelpers<FormType>): Promise<void>
     {
         try
         {
-            await authManagerService.signIn(values.username, values.password);
-            alert(authManagerService.isLoggedIn() + " " + authManagerService.getAccessToken());
+            await authManagerService.signUp(values.email, values.username, values.password);
 
-            navigate("/app", {
+            navigate("/signin", {
                 replace: true
             });
         }
@@ -106,9 +126,9 @@ export default function SignIn(): JSX.Element
 
     return (
         <AuthLayout
-            title="Sign In"
-            footer={<SignInFooter />}
-            form={<SignInForm />}
+            title="Sign Up"
+            footer={<SignUpFooter />}
+            form={<SignUpForm />}
             initialValues={INITIAL_FORM_STATE}
             validationSchema={FORM_VALIDATION_SCHEMA}
             onSubmit={handleSubmit}

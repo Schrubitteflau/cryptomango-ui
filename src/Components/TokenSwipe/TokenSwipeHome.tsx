@@ -1,10 +1,11 @@
 import { Button, Grid, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import { Network } from "../../Types";
 
 interface TokenSwipeHomeProps
 {
-    network: "BSC" | "Ethereum",
-    routes: Array<TokenSwipeRoute>
+    network: Network;
+    routes: Array<TokenSwipeRoute>;
 }
 
 type TokenSwipeRoute = {
@@ -25,7 +26,7 @@ export default function TokenSwipeHome(props: TokenSwipeHomeProps)
 
             <Grid container spacing={2} justifyContent="center">
                 {props.routes.map(route =>
-                    <Grid item>
+                    <Grid item key={route.path}>
                         <Link to={route.path}>
                             <Button variant="contained" color="primary">
                                 {route.tokenType}

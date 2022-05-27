@@ -7,12 +7,12 @@ import { ThemeProvider } from "@emotion/react";
 import * as Yup from "yup";
 import { Form, Formik, FormikHelpers } from "formik";
 
-import Copyright from "./Copyright";
+import Copyright from "../../../src/Components/Layout/Copyright";
+
+const theme = createTheme();
 
 // https://mui.com/getting-started/templates/sign-up/
 // https://mui.com/getting-started/templates/sign-in/
-
-const theme = createTheme();
 
 interface IAuthLayoutProps<T>
 {

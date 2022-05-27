@@ -1,30 +1,10 @@
-import { AuthManagerService } from "./AuthManagerService";
+import { AuthApiService } from "./AuthApiService";
 import { TokenSwipeApiService } from "./TokenSwipeApiService";
 
 class ServicesContainer
 {
-    private _authManagerService: AuthManagerService | null = null;
-    private _tokenSwipeApiService: TokenSwipeApiService | null = null;
-
-    public getAuthManagerService(): AuthManagerService
-    {
-        if (this._authManagerService === null)
-        {
-            this._authManagerService = new AuthManagerService();
-        }
-
-        return this._authManagerService;
-    }
-
-    public getTokenSwipeApiService(): TokenSwipeApiService
-    {
-        if (this._tokenSwipeApiService === null)
-        {
-            this._tokenSwipeApiService = new TokenSwipeApiService();
-        }
-
-        return this._tokenSwipeApiService;
-    }
+    public readonly authManagerService: AuthApiService = new AuthApiService();
+    public readonly tokenSwipeApiService: TokenSwipeApiService = new TokenSwipeApiService();
 }
 
-export const servicesContainer: ServicesContainer = new ServicesContainer();
+export const services: ServicesContainer = new ServicesContainer();
