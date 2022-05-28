@@ -5,15 +5,15 @@ import ConnectWalletButton from './ConnectWalletButton';
 
 export default function RequireWalletGuard({ children }: React.PropsWithChildren<{}>): JSX.Element
 {
-    const { isWalletConnected, setSigner } = useContext(UserContext);
-    const handleConnected = useCallback((signer: ethers.providers.JsonRpcSigner) => {
-        console.log("signer", signer);
-        setSigner(signer);
-    }, [ setSigner ]);
+    const { isWalletConnected, setProvider } = useContext(UserContext);
+    const handleConnected = useCallback((provider: ethers.providers.Web3Provider) => {
+        console.log("provider", provider);
+        setProvider(provider);
+    }, [ setProvider ]);
     const handleError = useCallback((error: Error) => {
         console.log("error", error);
-        setSigner(null);
-    }, [ setSigner ])
+        setProvider(null);
+    }, [ setProvider ])
 
     if (isWalletConnected)
     {

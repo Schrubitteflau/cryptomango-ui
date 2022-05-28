@@ -1,6 +1,7 @@
 import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
 import { Menu } from "@mui/icons-material";
 import RequireWalletGuard from "../Authentication/RequireWalletGuard";
+import DisconnectWalletButton from "../Authentication/DisconnectWalletButton";
 
 interface HeadToolbarProps
 {
@@ -20,6 +21,7 @@ export default function HeadToolbar(props: HeadToolbarProps)
                 </Typography>
                 <RequireWalletGuard>
                     Connected as : 0x...
+                    <DisconnectWalletButton />
                 </RequireWalletGuard>
             </Toolbar>
         </AppBar>

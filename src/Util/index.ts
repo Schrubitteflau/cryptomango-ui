@@ -4,9 +4,13 @@ export function toError(error: any): Error
     {
         return error;
     }
-    if (typeof error.message !== "undefined")
+    if (typeof error === "object")
     {
-        return new Error(error.message);
+        return new Error(typeof error.message === "undefined" ? "Unknown error" : error.message);
     }
-    return new Error(error);
+    if (typeof error === "string")
+    {
+        return new Error(error);
+    }
+    return new Error("Unknown error");
 }

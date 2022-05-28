@@ -4,8 +4,8 @@ import { createContext } from "react";
 export interface IUserContext
 {
     isWalletConnected: boolean;
-    signer: ethers.providers.JsonRpcSigner | null;
-    setSigner: (signer: ethers.providers.JsonRpcSigner | null) => void;
+    provider: ethers.providers.Web3Provider | null;
+    setProvider: (signer: ethers.providers.Web3Provider | null) => void;
 
     isAuthenticated: boolean;
     apiAccessToken: string | null;
@@ -14,8 +14,8 @@ export interface IUserContext
 
 export const UserContext = createContext<IUserContext>({
     isWalletConnected: false,
-    signer: null,
-    setSigner: () => {},
+    provider: null,
+    setProvider: () => {},
     
     isAuthenticated: false,
     apiAccessToken: null,

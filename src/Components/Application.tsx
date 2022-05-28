@@ -9,32 +9,59 @@ import UsefulResources from './UsefulResources';
 import Footer from './Layout/Footer';
 import TokenSwipe from './TokenSwipe/TokenSwipe';
 import { Network } from '../Types';
-import RequireWalletGuard from './Authentication/RequireWalletGuard';
 import { IUserContext, UserContext } from '../Context/UserContext';
 import RequireApiAuthenticationGuard from './Authentication/RequireApiAuthenticationGuard';
+import { web3Modal } from './Authentication/web3Modal';
 
 
 export default function Application()
 {
     const [ isNavMenuOpened, setIsNavMenuOpened ] = useState<boolean>(false);
-    const [ signer, setSigner ] = useState<IUserContext["signer"]>(null);
+    const [ provider, setProvider ] = useState<IUserContext["provider"]>(null);
     const [ apiAccessToken, setApiAccessToken ] = useState<IUserContext["apiAccessToken"]>(null);
     const [ userContextValue, setUserContextValue ] = useState<IUserContext>({
         isWalletConnected: false,
-        signer,
-        setSigner,
+        provider,
+        setProvider,
         isAuthenticated: false,
         apiAccessToken,
         setApiAccessToken
     });
 
+    // Réflechir à meilleur moyen de gérer ça ?
+    // Vraiment besoin de ça ?
     useEffect(() => {
         setUserContextValue({
             ...userContextValue,
-            signer,
-            isWalletConnected: (signer !== null)
+            provider,
+            isWalletConnected: (provider !== null)
         });
-    }, [ signer ]);
+
+        // Provider-events
+        if (provider === null) return;
+
+        // Subscribe to accounts change
+        provider.on("accountsChanged", (accounts: string[]) => {
+            console.log(accounts);
+        });
+
+        // Subscribe to chainId change
+        provider.on("chainChanged", (chainId: number) => {
+            console.log(chainId);
+        });
+
+        // Subscribe to provider connection
+        provider.on("connect", (info: { chainId: number }) => {
+            console.log(info);
+        });
+
+        // Subscribe to provider disconnection
+        provider.on("disconnect", (error: { code: number; message: string }) => {
+            console.log(error);
+            web3Modal.clearCachedProvider();
+            setProvider(null);
+        });
+    }, [ provider ]);
 
     useEffect(() => {
         setUserContextValue({
@@ -43,6 +70,13 @@ export default function Application()
             isAuthenticated: (apiAccessToken !== null)
         });
     }, [ apiAccessToken ]);
+
+    useEffect(() => {
+        if (userContextValue.provider === null)
+        {
+            setApiAccessToken(null);
+        }
+    }, [ userContextValue ]);
 
     /*
         CssBaseline is sort of CSS reset added to the <head /> of your document.

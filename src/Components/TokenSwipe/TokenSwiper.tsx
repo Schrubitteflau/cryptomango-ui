@@ -1,27 +1,36 @@
-import { useEffect, useState } from "react";
-import { services, TokenSwipeApiService } from "../../Services";
+import { useEffect, useMemo, useState } from "react";
+import { TokenSwipeApiService } from "../../Services";
+import { GetNextTokensResponse } from "../../Services/TokenSwipeApiService";
 import { Token, Network, TokenType } from "../../Types";
 import TokenCard from "./TokenCard";
 
 interface TokenSwiperProps
 {
-    network: Network
-    tokenType: TokenType
+    network: Network;
+    tokenType: TokenType;
+    apiAccessToken: string;
 }
 
-export default function TokenSwiper(props: TokenSwiperProps)
+export default function TokenSwiper({ network, tokenType, apiAccessToken }: TokenSwiperProps): JSX.Element
 {
-    const tokenSwipeApiService: TokenSwipeApiService = services.tokenSwipeApiService;
+    const tokenSwipeApiService = useMemo(() => new TokenSwipeApiService(apiAccessToken), [ apiAccessToken ]);
 
     const [ tokens, setTokens ] = useState<Array<Token>>([]);
     const [ isLoadingTokens, setIsLoadingTokens ] = useState<boolean>(false);
 
-    // Appelé seulement au montage du composant
+    async function getNextTokens()
+    {
+        const tokens: GetNextTokensResponse = await tokenSwipeApiService.getNextTokens({
+            chainId: network,
+            contractType: tokenType
+        });
+        return tokens.tokens;
+    }
+
     useEffect(() =>
     {
         setIsLoadingTokens(true);
-        tokenSwipeApiService.getTokens().then((tokens: Array<Token>) =>
-        {
+        getNextTokens().then((tokens: Array<Token>) => {
             setTokens(tokens);
             setIsLoadingTokens(false);
         });
@@ -33,8 +42,7 @@ export default function TokenSwiper(props: TokenSwiperProps)
         if (tokens.length < 4 && !isLoadingTokens)
         {
             setIsLoadingTokens(true);
-            tokenSwipeApiService.getTokens().then((nextTokens: Array<Token>) =>
-            {
+            getNextTokens().then((nextTokens: Array<Token>) => {
                 setTokens([ ...tokens, ...nextTokens ]);
                 setIsLoadingTokens(false);
             });

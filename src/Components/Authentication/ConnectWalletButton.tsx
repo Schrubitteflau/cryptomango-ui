@@ -1,10 +1,9 @@
 import { useCallback, useState } from "react";
 import { Button } from "@mui/material";
 
-// https://github.com/Web3Modal/web3modal
-import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import { toError } from "../../Util";
+import { web3Modal } from "./web3Modal";
 
 /*
     useEffect(() => {
@@ -22,39 +21,30 @@ import { toError } from "../../Util";
     }, [ isWalletConnected, isApiAuthenticated ])
     */
 
-const providerOptions = {
-    binancechainwallet: {
-        package: true
-    }
-};
 
-const web3Modal = new Web3Modal({
-    network: "mainnet",
-    theme: "dark",
-    cacheProvider: true,
-    providerOptions,
-    disableInjectedProvider: false
-});
 
 interface ConnectWalletButtonProps
 {
-    onConnected: (signer: ethers.providers.JsonRpcSigner) => void;
+    onConnected: (signer: ethers.providers.Web3Provider) => void;
     onError: (error: Error) => void;
 }
 
 export default function ConnectWalletButton({ onConnected, onError }: ConnectWalletButtonProps): JSX.Element
 {
     const [ isConnecting, setIsConnecting ] = useState<boolean>(false);
-    
+
     const handleConnectButtonClick = useCallback(async () => {
         setIsConnecting(true);
         try {
             const connection = await web3Modal.connect();
+            connection.on("disconnect", () => console.log("disconnect"))
+            connection.on("accountsChanged", (accounts: string[]) => {
+                // si accounts[0] n'est pas un string => on est déconnecté
+                console.log('ACCOUNTS CHANGED' + accounts[0]);
+              });
             const provider = new ethers.providers.Web3Provider(connection);
             console.log("provider", provider);
-            const signer: ethers.providers.JsonRpcSigner = provider.getSigner();
-            console.log("signer", signer);
-            onConnected(signer);
+            onConnected(provider);
         }
         catch (error) {
             onError(toError(error));

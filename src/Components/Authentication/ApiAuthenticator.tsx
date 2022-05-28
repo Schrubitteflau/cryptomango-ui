@@ -14,16 +14,17 @@ function getMessageToSign(address: string): string
 
 export interface ApiAuthenticatorProps
 {
-    signer: ethers.providers.JsonRpcSigner;
+    provider: ethers.providers.Web3Provider;
     onSuccess: (accessToken: string) => void;
     onError: (error: Error) => void;
 }
 
-export default function ApiAuthenticator({ signer, onSuccess, onError }: ApiAuthenticatorProps): JSX.Element
+export default function ApiAuthenticator({ provider, onSuccess, onError }: ApiAuthenticatorProps): JSX.Element
 {
     useEffect(() => {
         async function signAndConnect() {
             try {
+                const signer = provider.getSigner();
                 const address: string = await signer.getAddress();
                 const toSign: string = getMessageToSign(address);
                 const signature: string = await signer.signMessage(toSign);

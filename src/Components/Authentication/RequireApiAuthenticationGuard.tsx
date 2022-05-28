@@ -6,7 +6,7 @@ import RequireWalletGuard from "./RequireWalletGuard";
 
 export default function RequireApiAuthenticationGuard({ children }: React.PropsWithChildren<{}>): JSX.Element
 {
-    const { isWalletConnected, signer, isAuthenticated, apiAccessToken, setApiAccessToken } = useContext(UserContext);
+    const { isWalletConnected, provider, isAuthenticated, apiAccessToken, setApiAccessToken } = useContext(UserContext);
     const handleApiAuthenticationSuccess = useCallback((accessToken: string) => {
         console.log("accessToken", accessToken);
         setApiAccessToken(accessToken);
@@ -15,7 +15,7 @@ export default function RequireApiAuthenticationGuard({ children }: React.PropsW
         console.log("error", error);
     }, []);
 
-    if (isWalletConnected === false || signer === null)
+    if (isWalletConnected === false || provider === null)
     {
         return (
             <RequireWalletGuard />
@@ -26,7 +26,7 @@ export default function RequireApiAuthenticationGuard({ children }: React.PropsW
     {
         return (
             <ApiAuthenticator
-                signer={signer}
+                provider={provider}
                 onSuccess={handleApiAuthenticationSuccess}
                 onError={handleApiAuthenticationError}
             />

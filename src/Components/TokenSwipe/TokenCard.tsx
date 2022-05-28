@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Typography, Card, CardActions, CardContent, CardMedia, Slide, SlideProps, Button } from '@mui/material';
+import { Typography, Card, CardActions, CardContent, Slide, SlideProps, Button } from '@mui/material';
 import { Token } from '../../Types/Token';
 
 interface TokenCardProps
 {
-    token: Token,
-    onSwipeLeft: () => void,
-    onSwipeRight: () => void
+    token: Token;
+    onSwipeLeft: () => void;
+    onSwipeRight: () => void;
 }
 
 export default function TokenCard(props: TokenCardProps)
@@ -31,14 +31,17 @@ export default function TokenCard(props: TokenCardProps)
         direction === "right" ? props.onSwipeLeft() : props.onSwipeRight();
     }
 
+    /*
+    <CardMedia
+        sx={{paddingTop: '56.25%'}}
+        image="/photo.jfif"
+        title="Image title"
+    />
+    */
+
     return (
         <Slide onExited={handleOnExited} appear={false} direction={direction} in={inAnim} mountOnEnter unmountOnExit>
             <Card sx={{height: '100%', display: 'flex', flexDirection: 'column'}}>
-                <CardMedia
-                    sx={{paddingTop: '56.25%'}}
-                    image="/photo.jfif"
-                    title="Image title"
-                />
                 <CardContent sx={{flexGrow: 1}}>
                     <Typography variant="h5" gutterBottom>
                         Heading
