@@ -2,6 +2,13 @@
 import Web3Modal from "web3modal";
 
 const providerOptions = {
+    /*injected: {
+        display: {
+          name: "Metamask",
+          description: "Connect with the provider in your Browser",
+        },
+        package: null,
+    },*/
     binancechainwallet: {
         package: true
     }
