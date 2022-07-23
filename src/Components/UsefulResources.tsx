@@ -1,4 +1,4 @@
-export default function UsefulResources()
+export default function UsefulResources(): JSX.Element
 {
     return (
         <div>

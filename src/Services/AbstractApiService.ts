@@ -1,12 +1,10 @@
-import axios, { AxiosInstance } from "axios";
+import { AxiosInstance } from "axios";
 
 export abstract class AbstractApiService
 {
-    protected _axios: AxiosInstance = axios.create({
-        headers: {
-            Authorization: `Bearer ${this._accessToken}`
-        }
-    });
+    protected abstract readonly _BASE_PATH: string;
 
-    public constructor(private readonly _accessToken: string) { }
+    public constructor(
+        protected readonly _axios: AxiosInstance
+    ) {}
 }

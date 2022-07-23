@@ -1,7 +1,8 @@
-import { ethers } from "ethers";
-import { useEffect } from "react";
-import { services } from "../../Services";
-import { toError } from "../../Util";
+import { useEffect, useMemo } from "react";
+import { useSignMessage, useAccount } from "wagmi";
+
+import { useAuth, useAxiosPublic } from "../../Hooks";
+import { AuthApiService } from "../../Services/AuthApiService";
 
 function getMessageToSign(address: string): string
 {
@@ -12,35 +13,37 @@ function getMessageToSign(address: string): string
     return JSON.stringify(objToSign, null, 4);
 }
 
-export interface ApiAuthenticatorProps
+export default function ApiAuthenticator(): JSX.Element
 {
-    provider: ethers.providers.Web3Provider;
-    onSuccess: (accessToken: string) => void;
-    onError: (error: Error) => void;
-}
+    const { address, isConnected } = useAccount();
+    const { signMessageAsync } = useSignMessage();
+    const { setApiAccessToken } = useAuth();
+    const { axios } = useAxiosPublic();
+    const authApiService: AuthApiService = useMemo(() => new AuthApiService(axios), [ axios ]);
 
-export default function ApiAuthenticator({ provider, onSuccess, onError }: ApiAuthenticatorProps): JSX.Element
-{
     useEffect(() => {
         async function signAndConnect() {
             try {
-                const signer = provider.getSigner();
-                const address: string = await signer.getAddress();
-                const toSign: string = getMessageToSign(address);
-                const signature: string = await signer.signMessage(toSign);
-                const { accessToken } = await services.authManagerService.connectWallet({
-                    address,
-                    signature
+                // @TODO des fois on a ConnectorNotFound
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+                if (!address || !isConnected) throw new Error("Address is not set or not connected");
+                const signature: string = await signMessageAsync({
+                    message: getMessageToSign(address)
                 });
-                onSuccess(accessToken);
+
+                const { accessToken } = await authApiService.connectWallet({
+                    signature,
+                    address
+                });
+
+                setApiAccessToken(accessToken);
             }
             catch (error) {
                 console.log(error);
-                onError(toError(error));
             }
         }
         signAndConnect();
-    }, []);
+    }, [ address, authApiService, isConnected, setApiAccessToken, signMessageAsync ]);
 
     return <>Authenticating...</>;
 }

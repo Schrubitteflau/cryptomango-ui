@@ -1,24 +1,17 @@
-import { ethers } from 'ethers';
-import { useCallback, useContext } from 'react';
-import { UserContext } from '../../Context/UserContext';
-import ConnectWalletButton from './ConnectWalletButton';
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
 
 export default function RequireWalletGuard({ children }: React.PropsWithChildren<{}>): JSX.Element
 {
-    const { isWalletConnected, setProvider } = useContext(UserContext);
-    const handleConnected = useCallback((provider: ethers.providers.Web3Provider) => {
-        console.log("provider", provider);
-        setProvider(provider);
-    }, [ setProvider ]);
-    const handleError = useCallback((error: Error) => {
-        console.log("error", error);
-        setProvider(null);
-    }, [ setProvider ])
+    const { isConnected } = useAccount();
 
-    if (isWalletConnected)
+    if (isConnected)
     {
         return <>{children}</>;
     }
 
-    return <ConnectWalletButton onConnected={handleConnected} onError={handleError}></ConnectWalletButton>
+    return (isConnected ?
+        <>{children}</> :
+        <ConnectButton />
+    );
 }

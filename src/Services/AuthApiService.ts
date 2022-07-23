@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { AbstractApiService } from "./AbstractApiService";
+
 interface ConnectWalletRequest
 {
     signature: string;
@@ -11,14 +13,14 @@ interface ConnectWalletResponse
     accessToken: string;
 }
 
-export class AuthApiService
+export class AuthApiService extends AbstractApiService
 {
-    private readonly _BASE_API: string = "http://127.0.0.1:8000/auth";
+    protected readonly _BASE_PATH: string = "/auth";
 
     public async connectWallet(request: ConnectWalletRequest): Promise<ConnectWalletResponse>
     {
         try {
-            const response = await axios.post<ConnectWalletResponse>(`${this._BASE_API}/connectWallet`, request);
+            const response = await this._axios.post<ConnectWalletResponse>(`${this._BASE_PATH}/connectWallet`, request);
             return response.data;
         }
         catch (error)

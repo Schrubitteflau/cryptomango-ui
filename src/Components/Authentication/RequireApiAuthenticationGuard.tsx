@@ -1,39 +1,29 @@
-import { useCallback, useContext } from "react";
+import { useAccount } from "wagmi";
 
-import { UserContext } from "../../Context/UserContext";
+import { useAuth } from "../../Hooks/useAuth";
 import ApiAuthenticator from "./ApiAuthenticator";
 import RequireWalletGuard from "./RequireWalletGuard";
 
 export default function RequireApiAuthenticationGuard({ children }: React.PropsWithChildren<{}>): JSX.Element
 {
-    const { isWalletConnected, provider, isAuthenticated, apiAccessToken, setApiAccessToken } = useContext(UserContext);
-    const handleApiAuthenticationSuccess = useCallback((accessToken: string) => {
-        console.log("accessToken", accessToken);
-        setApiAccessToken(accessToken);
-    }, []);
-    const handleApiAuthenticationError = useCallback((error: Error) => {
-        console.log("error", error);
-    }, []);
+    const { isConnected } = useAccount();
+    const { isAuthenticated } = useAuth();
 
-    if (isWalletConnected === false || provider === null)
+    if (isConnected === false)
     {
         return (
             <RequireWalletGuard />
         );
     }
 
-    if (isAuthenticated === false || apiAccessToken === null)
+    if (isAuthenticated === false)
     {
         return (
-            <ApiAuthenticator
-                provider={provider}
-                onSuccess={handleApiAuthenticationSuccess}
-                onError={handleApiAuthenticationError}
-            />
+            <ApiAuthenticator />
         );
     }
 
     return (
         <>{children}</>
-    )
+    );
 }

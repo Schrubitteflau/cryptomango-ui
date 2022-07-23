@@ -1,14 +1,15 @@
 import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
 import { Menu } from "@mui/icons-material";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+
 import RequireWalletGuard from "../Authentication/RequireWalletGuard";
-import DisconnectWalletButton from "../Authentication/DisconnectWalletButton";
 
 interface HeadToolbarProps
 {
-    onDisplayMenuClick: () => void
+    onDisplayMenuClick: () => void;
 }
 
-export default function HeadToolbar(props: HeadToolbarProps)
+export default function HeadToolbar(props: HeadToolbarProps): JSX.Element
 {
     return (
         <AppBar position="relative">
@@ -19,9 +20,10 @@ export default function HeadToolbar(props: HeadToolbarProps)
                 <Typography variant="h6">
                     Cryptomango
                 </Typography>
+                <ConnectButton />
                 <RequireWalletGuard>
-                    Connected as : 0x...
-                    <DisconnectWalletButton />
+                    yo
+                    <ConnectButton />
                 </RequireWalletGuard>
             </Toolbar>
         </AppBar>

@@ -1,9 +1,8 @@
-import { useContext } from "react";
 import { Routes, Route } from "react-router-dom";
-import { UserContext } from "../../Context/UserContext";
+
 import { Network } from "../../Types";
 import TokenSwipeHome from "./TokenSwipeHome";
-import TokenSwiper from "./TokenSwiper";
+import TokenSwiperV2 from "./TokenSwiperV2";
 
 interface TokenSwipeProps
 {
@@ -23,15 +22,6 @@ const routes: Array<TokenSwipeRoute> = [
 
 export default function TokenSwipe(props: TokenSwipeProps)
 {
-    const { isAuthenticated, apiAccessToken } = useContext(UserContext);
-
-    if (isAuthenticated === false || apiAccessToken === null)
-    {
-        return (
-            <div>You must be authenticated</div>
-        );
-    }
-
     return (
         <Routes>
             <Route path="/" element={<TokenSwipeHome network={props.network} routes={routes} />} />
@@ -40,7 +30,12 @@ export default function TokenSwipe(props: TokenSwipeProps)
                 <Route
                     key={route.path}
                     path={route.path}
-                    element={<TokenSwiper network={props.network} tokenType={route.tokenType} apiAccessToken={apiAccessToken} />}
+                    element={
+                        <TokenSwiperV2
+                            network={props.network}
+                            tokenType={route.tokenType}
+                        />
+                    }
                 />
             )}
         </Routes>

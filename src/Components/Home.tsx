@@ -1,6 +1,6 @@
 import { Container, Typography, Grid, Button} from "@mui/material";
 
-export default function Home()
+export default function Home(): JSX.Element
 {
     return (
         <div sx={{ backgroundColor: "red", paddingTop: 2}}>

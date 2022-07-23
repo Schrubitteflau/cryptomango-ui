@@ -1,6 +1,7 @@
+import { Link } from "react-router-dom";
 import { SwipeableDrawer, List, ListSubheader, ListItemText, ListItemIcon, ListItemButton } from '@mui/material';
 import { PhotoCamera, StarBorder } from '@mui/icons-material';
-import { Link } from "react-router-dom";
+
 import ExpandableListItemButton from './ExpandableListItemButton';
 
 interface NavMenuProps
