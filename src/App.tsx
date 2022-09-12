@@ -56,7 +56,7 @@ const App = () => {
 
     return (
         <WagmiConfig client={wagmiClient}>
-            <RainbowKitProvider chains={chains}>
+            <RainbowKitProvider modalSize="compact" chains={chains}>
                 <Routes>
                     <Route path="/" element={<Welcome />} />
                     <Route path="/app/*" element={
